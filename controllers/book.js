@@ -24,12 +24,11 @@ exports.setBook = (req, res, next) => {
 	book.save().then(result => {
 		res.status(201).json({
 			message: 'Book added successfully.'
-
 		})
 	})
 }
 
-exports.deletePost = (req, res, next) => {
+exports.deleteBook = (req, res, next) => {
 	Book.deleteOne({
 		_id: req.params.id
 	}).then(result => {
