@@ -3,19 +3,29 @@ var _ = require("lodash");
 
 exports.getBooks = (req, res, next) => {
   let booksQuery;
-  let sort = { [req.query.sortItem]: +req.query.order };
-  console.log(sort);
+  let pageSize = req.query.pageSize;
+  let pageIndex = req.query.pageIndex;
+  let sort = {
+    [req.query.sortItem]: +req.query.order
+  };
+  console.log(req.query);
   if (!_.isEmpty(req.query)) {
     console.log("u petlji smo", req.query);
     if (req.query.author) {
       console.log("autor je");
       booksQuery = {
-        author: { $regex: ".*" + req.query.author + ".*", $options: "i" }
+        author: {
+          $regex: ".*" + req.query.author + ".*",
+          $options: "i"
+        }
       };
     } else if (req.query.title) {
       console.log("title je");
       booksQuery = {
-        title: { $regex: ".*" + req.query.title + ".*", $options: "i" }
+        title: {
+          $regex: ".*" + req.query.title + ".*",
+          $options: "i"
+        }
       };
     } else {
       booksQuery = {};
@@ -25,6 +35,7 @@ exports.getBooks = (req, res, next) => {
   }
   let fetchedBooks;
   Book.find(booksQuery)
+    .skip(+pageSize * (+pageIndex)).limit(+pageSize)
     //-1 desc, 1 asc: .sort({author: 1})
     .sort(sort)
     .then(books => {
@@ -88,8 +99,7 @@ exports.updateBook = (req, res, next) => {
     author: req.body.author,
     year: req.body.year
   });
-  Book.updateOne(
-    {
+  Book.updateOne({
       _id: req.params.id
     },
     book
