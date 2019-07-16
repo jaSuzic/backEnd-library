@@ -1,10 +1,18 @@
 const Member = require('../models/member');
+const moment = require('moment');
 
 exports.getMembers = (req, res, next) => {
 	const membQuery = Member.find();
 	let fetchedMembers;
 	membQuery.then(members => {
-		fetchedMembers = members;
+		fetchedMembers = members.map(member => {
+			return {
+				_id: member._id,
+				birthDate: moment(member.birthDate).format('DD/MM/YYYY'),
+				lastName: member.lastName,
+				name: member.name
+			}
+		});
 		return Member.countDocuments();
 	}).then(count => {
 		res.status(200).json({
