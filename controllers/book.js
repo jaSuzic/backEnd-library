@@ -8,11 +8,8 @@ exports.getBooks = (req, res, next) => {
   let sort = {
     [req.query.sortItem]: +req.query.order
   };
-  console.log(req.query);
   if (!_.isEmpty(req.query)) {
-    console.log("u petlji smo", req.query);
     if (req.query.author) {
-      console.log("autor je");
       booksQuery = {
         author: {
           $regex: ".*" + req.query.author + ".*",
@@ -20,7 +17,6 @@ exports.getBooks = (req, res, next) => {
         }
       };
     } else if (req.query.title) {
-      console.log("title je");
       booksQuery = {
         title: {
           $regex: ".*" + req.query.title + ".*",
@@ -35,7 +31,8 @@ exports.getBooks = (req, res, next) => {
   }
   let fetchedBooks;
   Book.find(booksQuery)
-    .skip(+pageSize * (+pageIndex)).limit(+pageSize)
+    .skip(+pageSize * +pageIndex)
+    .limit(+pageSize)
     //-1 desc, 1 asc: .sort({author: 1})
     .sort(sort)
     .then(books => {
@@ -99,7 +96,8 @@ exports.updateBook = (req, res, next) => {
     author: req.body.author,
     year: req.body.year
   });
-  Book.updateOne({
+  Book.updateOne(
+    {
       _id: req.params.id
     },
     book
