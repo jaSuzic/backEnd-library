@@ -1,5 +1,4 @@
 const Rent = require("../models/rent");
-const mongoose = require("mongoose");
 
 exports.getRents = (req, res, next) => {
   const rentQuery = Rent.find()
@@ -80,8 +79,7 @@ exports.updateRent = (req, res, next) => {
   });
   console.log("U BE smo, evo ga rent: ", rent);
   console.log("U BE smo, evo ga rent: ", req.body);
-  Rent.updateOne(
-    {
+  Rent.updateOne({
       _id: req.params.id
     },
     rent

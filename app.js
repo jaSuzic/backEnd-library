@@ -5,6 +5,7 @@ const mongoose = require("mongoose");
 const booksRoutes = require("./routes/books");
 const membersRoutes = require("./routes/members");
 const rentsRoutes = require("./routes/rents");
+const userRoutes = require('./routes/users')
 
 const app = express();
 
@@ -34,8 +35,7 @@ app.use((req, res, next) => {
 //Connecting to mongoDB
 mongoose
   .connect(
-    "mongodb+srv://libAdmin:7adcniXmxCW6ErKm@cluster0-87hud.mongodb.net/app-library?retryWrites=true&w=majority",
-    {
+    "mongodb+srv://libAdmin:7adcniXmxCW6ErKm@cluster0-87hud.mongodb.net/app-library?retryWrites=true&w=majority", {
       useNewUrlParser: true
     }
   )
@@ -50,5 +50,6 @@ mongoose
 app.use("/api/books", booksRoutes);
 app.use("/api/members", membersRoutes);
 app.use("/api/rents", rentsRoutes);
+app.use("/api/user", userRoutes);
 
 module.exports = app;
