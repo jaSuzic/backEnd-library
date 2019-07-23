@@ -7,7 +7,10 @@ exports.createNewUser = (req, res, next) => {
 		hash => {
 			const user = new User({
 				email: req.body.email,
-				password: hash
+				password: hash,
+				firstName: req.body.firstName,
+				lastName: req.body.lastName,
+				position: req.body.position
 			});
 			user.save().then(result => {
 				res.status(201).json({
@@ -47,7 +50,9 @@ exports.loginUser = (req, res, next) => {
 		});
 		res.status(200).json({
 			message: "success",
-			token: token
+			token: token,
+			expiresIn: 28800,
+			user: fetchedUser
 		})
 	}).catch(err => {
 		return res.status(401).json({

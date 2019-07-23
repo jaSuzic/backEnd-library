@@ -20,14 +20,12 @@ exports.getRents = (req, res, next) => {
 };
 
 exports.setRent = (req, res, next) => {
-  console.log(req.body);
   const rent = new Rent({
     memberId: req.body.idMember,
     bookId: req.body.idBook,
     rentDate: req.body.rentDate,
     returnDate: req.body.returnDate
   });
-  console.log("Evo ga rent obj: ", rent);
   rent.save().then(
     result => {
       res.status(201).json({
@@ -77,8 +75,6 @@ exports.updateRent = (req, res, next) => {
     rentDate: req.body.rentDate,
     returnDate: req.body.returnDate
   });
-  console.log("U BE smo, evo ga rent: ", rent);
-  console.log("U BE smo, evo ga rent: ", req.body);
   Rent.updateOne({
       _id: req.params.id
     },
