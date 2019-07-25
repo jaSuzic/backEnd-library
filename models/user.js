@@ -25,6 +25,10 @@ const userSchema = mongoose.Schema({
 		enum: ['librarian', 'admin', 'super-admin'],
 		lowercase: true,
 		trim: true
+	},
+	image: {
+		type: String,
+		required: false,
 	}
 });
 
