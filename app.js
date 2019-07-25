@@ -16,7 +16,7 @@ app.use(
   })
 );
 
-app.use("/images", express.static(path.join("BE/images")));
+app.use("/images", express.static(path.join("images")));
 
 //For CORS:
 app.use((req, res, next) => {
