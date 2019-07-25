@@ -93,11 +93,13 @@ exports.getBook = (req, res, next) => {
 };
 
 exports.updateBook = (req, res, next) => {
+  const url = req.protocol + '://' + req.get('host');
   const book = new Book({
     _id: req.params.id,
     title: req.body.title,
     author: req.body.author,
-    year: req.body.year
+    year: req.body.year,
+    imagePath: url + '/images/' + req.file.filename
   });
   Book.updateOne({
       _id: req.params.id
