@@ -4,12 +4,12 @@ const rentSchema = mongoose.Schema({
   memberId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Member",
-    require: true
+    required: true
   },
   bookId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Book",
-    require: true
+    required: true
   },
   rentDate: {
     type: Date,
@@ -17,7 +17,7 @@ const rentSchema = mongoose.Schema({
   },
   returnDate: {
     type: Date,
-    require: false
+    required: false
   }
 });
 
