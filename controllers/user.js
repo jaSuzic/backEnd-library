@@ -82,7 +82,6 @@ exports.deleteUser = (req, res, next) => {
 //needs to be tested
 exports.updatePassword = (req, res, next) => {
 	let fetchedUser;
-	//Dozvoliti samo ulogovanom useru da promeni svoj mail
 	User.findOne({
 		email: req.body.email
 	}).then(user => {
