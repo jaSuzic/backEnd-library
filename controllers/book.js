@@ -1,6 +1,7 @@
 const Book = require("../models/book");
 var _ = require("lodash");
 
+
 exports.getBooks = (req, res, next) => {
   let booksQuery;
   let pageSize = req.query.pageSize;
@@ -49,10 +50,12 @@ exports.getBooks = (req, res, next) => {
 };
 
 exports.setBook = (req, res, next) => {
+  const url = req.protocol + '://' + req.get('host');
   const book = new Book({
     title: req.body.title,
     author: req.body.author,
-    year: req.body.year
+    year: req.body.year,
+    imagePath: url + '/images/' + req.file.filename
   });
   book.save().then(result => {
     res.status(201).json({
@@ -96,8 +99,7 @@ exports.updateBook = (req, res, next) => {
     author: req.body.author,
     year: req.body.year
   });
-  Book.updateOne(
-    {
+  Book.updateOne({
       _id: req.params.id
     },
     book

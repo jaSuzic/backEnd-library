@@ -3,13 +3,17 @@ const mongoose = require('mongoose');
 const bookSchema = mongoose.Schema({
 	title: {
 		type: String,
-		require: true,
+		required: true,
 	},
 	author: {
 		type: String,
-		require: true,
+		required: true,
 	},
 	year: Number,
+	imagePath: {
+		type: String,
+		required: false
+	}
 })
 
 module.exports = mongoose.model('Book', bookSchema);
