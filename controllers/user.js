@@ -79,6 +79,7 @@ exports.deleteUser = (req, res, next) => {
 	})
 }
 
+//needs to be tested
 exports.updatePassword = (req, res, next) => {
 	let user;
 	//Dozvoliti samo ulogovanom useru da promeni svoj mail
