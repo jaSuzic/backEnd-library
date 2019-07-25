@@ -12,7 +12,7 @@ exports.createNewUser = (req, res, next) => {
 				firstName: req.body.firstName,
 				lastName: req.body.lastName,
 				position: req.body.position,
-				image: url + '/images/' + req.file.filename
+				image: req.file ? url + '/images/' + req.file.filename : null
 			});
 			user.save().then(result => {
 				res.status(201).json({
@@ -48,8 +48,8 @@ exports.loginUser = (req, res, next) => {
 			email: fetchedUser.email,
 			userId: fetchedUser._id
 		}, 'Jaksa_Suzic_App_Library_secret_key', {
-			expiresIn: '8h'
-		});
+				expiresIn: '8h'
+			});
 		res.status(200).json({
 			message: "success",
 			token: token,
@@ -81,25 +81,36 @@ exports.deleteUser = (req, res, next) => {
 
 //needs to be tested
 exports.updatePassword = (req, res, next) => {
-	let user;
+	let fetchedUser;
 	//Dozvoliti samo ulogovanom useru da promeni svoj mail
 	User.findOne({
 		email: req.body.email
 	}).then(user => {
 		if (!user) return res.status(401)
-		user = user;
+		fetchedUser = user;
+		console.log('User ide dalje sa: ', fetchedUser)
 		return bcrypt.compare(req.body.oldPass, user.password)
 	}).then(result => {
 		if (!result) return res.status(401)
 		bcrypt.hash(req.body.newPass, 10).then(
 			hash => {
 				User.updateOne({
-					_id: user._id
+					_id: fetchedUser._id
 				}, {
-					password: hash
-				})
-			}
-		)
+						password: hash
+					}).then(result => {
+						if (result.n > 0) {
+							res.status(200).json({
+								message: "Password changed. Please login with your new password!"
+							});
+						} else {
+							res.status(401).json({
+								message: "Update failed"
+							});
+						}
+					}
+					)
+			})
 	})
 }
 
