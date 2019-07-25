@@ -5,12 +5,14 @@ const jwt = require('jsonwebtoken')
 exports.createNewUser = (req, res, next) => {
 	bcrypt.hash(req.body.password, 10).then(
 		hash => {
+			const url = req.protocol + '://' + req.get('host');
 			const user = new User({
 				email: req.body.email,
 				password: hash,
 				firstName: req.body.firstName,
 				lastName: req.body.lastName,
-				position: req.body.position
+				position: req.body.position,
+				image: url + '/images/' + req.file.filename
 			});
 			user.save().then(result => {
 				res.status(201).json({
@@ -59,4 +61,47 @@ exports.loginUser = (req, res, next) => {
 			message: "Auth failed"
 		})
 	})
+}
+
+exports.deleteUser = (req, res, next) => {
+	User.deleteOne({
+		_id: req.params.id
+	}).then(results => {
+		if (results.n > 0) {
+			res.status(201).json({
+				message: 'User deleted'
+			});
+		} else {
+			res.status(401).json({
+				message: "There was problem with credentials, user wasn't deleted"
+			})
+		}
+	})
+}
+
+exports.updatePassword = (req, res, next) => {
+	let user;
+	//Dozvoliti samo ulogovanom useru da promeni svoj mail
+	User.findOne({
+		email: req.body.email
+	}).then(user => {
+		if (!user) return res.status(401)
+		user = user;
+		return bcrypt.compare(req.body.oldPass, user.password)
+	}).then(result => {
+		if (!result) return res.status(401)
+		bcrypt.hash(req.body.newPass, 10).then(
+			hash => {
+				User.updateOne({
+					_id: user._id
+				}, {
+					password: hash
+				})
+			}
+		)
+	})
+}
+
+exports.updateImage = (req, res, next) => {
+	//omoguciti ulogovanom useru da promeni SVOJU sliku
 }
