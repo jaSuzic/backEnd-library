@@ -6,5 +6,6 @@ const multer = require('../middleware/multer')
 router.post('/login', userController.loginUser);
 router.post('/register', multer, userController.createNewUser);
 router.post('/updatePass', userController.updatePassword);
+router.post('/updateImage', multer, userController.updateImage);
 
 module.exports = router;
