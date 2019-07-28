@@ -150,11 +150,13 @@ exports.updateImage = (req, res, next) => {
 };
 
 exports.getUsersExcept = (req, res, next) => {
-  User.find({ $nor: [{ _id: req.body.id }] }).then(users => {
-    if (users) {
-      res.status(200).json(users);
-    } else {
-      res.status(404).json({ message: "Error." })
-    }
-  })
+  User.find({ $nor: [{ _id: req.body.id }] })
+    .select('-password')
+    .then(users => {
+      if (users) {
+        res.status(200).json(users);
+      } else {
+        res.status(404).json({ message: "Error." })
+      }
+    })
 }
