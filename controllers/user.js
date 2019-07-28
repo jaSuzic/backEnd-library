@@ -1,6 +1,7 @@
 const User = require("../models/user");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+var _ = require("lodash");
 
 exports.createNewUser = (req, res, next) => {
   bcrypt.hash(req.body.password, 10).then(hash => {
@@ -11,14 +12,13 @@ exports.createNewUser = (req, res, next) => {
       firstName: req.body.firstName,
       lastName: req.body.lastName,
       position: req.body.position,
-      image: url + "/images/" + req.file.filename
+      image: req.file ? (url + "/images/" + req.file.filename) : null
     });
     user
       .save()
       .then(result => {
         res.status(201).json({
           message: "User created",
-          result: result
         });
       })
       .catch(err => {
@@ -32,8 +32,8 @@ exports.createNewUser = (req, res, next) => {
 exports.loginUser = (req, res, next) => {
   let fetchedUser;
   User.findOne({
-      email: req.body.email
-    })
+    email: req.body.email
+  })
     .then(user => {
       if (!user)
         return res.status(401).json({
@@ -49,9 +49,9 @@ exports.loginUser = (req, res, next) => {
         });
       // JWT is used now
       const token = jwt.sign({
-          email: fetchedUser.email,
-          userId: fetchedUser._id
-        },
+        email: fetchedUser.email,
+        userId: fetchedUser._id
+      },
         "Jaksa_Suzic_App_Library_secret_key", {
           expiresIn: "8h"
         }
@@ -60,7 +60,14 @@ exports.loginUser = (req, res, next) => {
         message: "success",
         token: token,
         expiresIn: 28800,
-        user: fetchedUser
+        user: {
+          _id: fetchedUser._id,
+          email: fetchedUser.email,
+          firstName: fetchedUser.firstName,
+          lastName: fetchedUser.lastName,
+          image: fetchedUser.image,
+          position: fetchedUser.position
+        }
       });
     })
     .catch(err => {
@@ -88,13 +95,13 @@ exports.deleteUser = (req, res, next) => {
 
 //needs to be tested
 exports.updatePassword = (req, res, next) => {
-  let user;
+  let fetchedUser;
   User.findOne({
-      email: req.body.email
-    })
+    email: req.body.email
+  })
     .then(user => {
       if (!user) return res.status(401);
-      user = user;
+      fetchedUser = user;
       return bcrypt.compare(req.body.oldPass, user.password);
     })
     .then(result => {
@@ -103,10 +110,20 @@ exports.updatePassword = (req, res, next) => {
       });
       bcrypt.hash(req.body.newPass, 10).then(hash => {
         User.updateOne({
-          _id: user._id
+          _id: fetchedUser._id
         }, {
-          password: hash
-        });
+            password: hash
+          }).then(result => {
+            if (result.n > 0) {
+              res.status(200).json({
+                message: "Updated successful"
+              });
+            } else {
+              res.status(401).json({
+                message: "Update failed"
+              });
+            }
+          });;
       });
     });
 };
@@ -117,17 +134,27 @@ exports.updateImage = (req, res, next) => {
   User.updateOne({
     _id: req.body.id
   }, {
-    image: url + '/images/' + req.file.filename
-  }).
-  then(result => {
-    if (result.n > 0) {
-      res.status(200).json({
-        message: 'Image updated!'
-      })
+      image: url + '/images/' + req.file.filename
+    }).
+    then(result => {
+      if (result.n > 0) {
+        res.status(200).json({
+          message: 'Image updated!'
+        })
+      } else {
+        res.status(401).json({
+          message: "Update failed"
+        })
+      }
+    })
+};
+
+exports.getUsersExcept = (req, res, next) => {
+  User.find({ $nor: [{ _id: req.body.id }] }).then(users => {
+    if (users) {
+      res.status(200).json(users);
     } else {
-      res.status(401).json({
-        message: "Update failed"
-      })
+      res.status(404).json({ message: "Error." })
     }
   })
-};
+}
