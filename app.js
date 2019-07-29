@@ -36,7 +36,8 @@ app.use((req, res, next) => {
 mongoose
   .connect(
     "mongodb+srv://libAdmin:7adcniXmxCW6ErKm@cluster0-87hud.mongodb.net/app-library?retryWrites=true&w=majority", {
-      useNewUrlParser: true
+      useNewUrlParser: true,
+      useCreateIndex: true
     }
   )
   .then(res => {
