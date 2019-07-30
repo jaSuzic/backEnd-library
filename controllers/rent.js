@@ -19,6 +19,28 @@ exports.getRents = (req, res, next) => {
     });
 };
 
+exports.getActiveRents = (req, res, next) => {
+
+  const rentQuery = Rent.find({
+      returnDate: null
+    })
+    .populate("bookId")
+    .populate("memberId");
+  let fetchedRents;
+  rentQuery
+    .then(rents => {
+      fetchedRents = rents;
+      return Rent.countDocuments();
+    })
+    .then(count => {
+      res.status(200).json({
+        message: "Rents fetched successfully!",
+        rents: fetchedRents,
+        count: count
+      });
+    }).catch((e) => console.log(e));
+};
+
 exports.setRent = (req, res, next) => {
   const rent = new Rent({
     memberId: req.body.idMember,
@@ -90,4 +112,38 @@ exports.updateRent = (req, res, next) => {
       });
     }
   });
+
 };
+exports.returnBook = (req, res, next) => {
+
+  Rent.updateOne({
+    _id: req.body.id
+  }, {
+    returnDate: req.body.returnDate
+  }).then(result => {
+    if (result.n > 0) {
+      res.status(200).json({
+        message: "Book returned"
+      })
+    } else {
+      res.status(401).json({
+        message: "Update failed"
+      })
+    }
+  })
+  // Rent.updateOne({
+  //   _id: req.body.id
+  // }, {
+  //   returnDate: req.body.returnDate
+  // }).then(result => {
+  //   if (result.n > 0) {
+  //     res.status(200).json({
+  //       message: "Book returned"
+  //     })
+  //   } else {
+  //     res.status(401).json({
+  //       message: "Update failed"
+  //     })
+  //   }
+  // })
+}
