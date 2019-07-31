@@ -4,6 +4,7 @@ const router = express.Router();
 
 router.get("", rentsController.getRents);
 router.get("/active", rentsController.getActiveRents);
+router.post("/history", rentsController.history);
 router.post("", rentsController.setRent);
 router.patch("/returnBook", rentsController.returnBook);
 router.get("/:id", rentsController.getRent);

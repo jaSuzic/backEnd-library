@@ -1,4 +1,5 @@
 const Rent = require("../models/rent");
+const mongoose = require('mongoose')
 
 exports.getRents = (req, res, next) => {
   const rentQuery = Rent.find()
@@ -131,19 +132,23 @@ exports.returnBook = (req, res, next) => {
       })
     }
   })
-  // Rent.updateOne({
-  //   _id: req.body.id
-  // }, {
-  //   returnDate: req.body.returnDate
-  // }).then(result => {
-  //   if (result.n > 0) {
-  //     res.status(200).json({
-  //       message: "Book returned"
-  //     })
-  //   } else {
-  //     res.status(401).json({
-  //       message: "Update failed"
-  //     })
-  //   }
-  // })
+
+
+}
+
+exports.history = (req, res, next) => {
+  const id = mongoose.Types.ObjectId(req.body.memberId);
+  Rent.find({
+    memberId: id
+  }).populate("bookId").then(result => {
+    if (result) {
+      res.status(200).json({
+        rents: result
+      })
+    } else {
+      res.status(404).json({
+        message: "User not found or don't have any rents"
+      })
+    }
+  })
 }
