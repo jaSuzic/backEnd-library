@@ -9,5 +9,6 @@ router.post("/updatePass", userController.updatePassword);
 router.patch("/updateImage", multer, userController.updateImage);
 router.post("/getUsers", userController.getUsersExcept);
 router.put("/updateUser", multer, userController.updateUser);
+router.delete("/:id", userController.deleteUser);
 
 module.exports = router;
