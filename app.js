@@ -5,7 +5,8 @@ const mongoose = require("mongoose");
 const booksRoutes = require("./routes/books");
 const membersRoutes = require("./routes/members");
 const rentsRoutes = require("./routes/rents");
-const userRoutes = require('./routes/users')
+const userRoutes = require("./routes/users");
+const detenv = require("dotenv").config();
 
 const app = express();
 
@@ -33,9 +34,19 @@ app.use((req, res, next) => {
 });
 
 //Connecting to mongoDB
+
+// libAdmin gOe69S3dEHY9ZxMz
+const user = process.env.DB_USER_NAME;
+const pass = process.env.DB_PASS;
+console.log(user, pass);
 mongoose
   .connect(
-    "mongodb+srv://libAdmin:7adcniXmxCW6ErKm@cluster0-87hud.mongodb.net/app-library?retryWrites=true&w=majority", {
+    "mongodb+srv://" +
+      user +
+      ":" +
+      pass +
+      "@cluster0-87hud.mongodb.net/app-library?retryWrites=true&w=majority",
+    {
       useNewUrlParser: true,
       useCreateIndex: true
     }

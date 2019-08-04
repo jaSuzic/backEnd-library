@@ -22,6 +22,9 @@ exports.getMembers = (req, res, next) => {
         members: fetchedMembers,
         count: count
       });
+    })
+    .catch(err => {
+      res.status(500).json({ message: "Error happend: " + err.message });
     });
 };
 
@@ -33,39 +36,52 @@ exports.setMember = (req, res, next) => {
     //so datepicker should send that format
     birthDate: new Date(req.body.birthDate)
   });
-  member.save().then(result => {
-    res.status(201).json({
-      message: "New member added successfully. "
+  member
+    .save()
+    .then(result => {
+      res.status(201).json({
+        message: "New member added successfully. "
+      });
+    })
+    .catch(err => {
+      res.status(500).json({ message: "Error happend: " + err.message });
     });
-  });
 };
 
 exports.deleteMember = (req, res, next) => {
   Member.deleteOne({
     _id: req.params.id
-  }).then(result => {
-    if (result.n > 0) {
-      res.status(201).json({
-        message: "Member deleted"
-      });
-    } else {
-      res.status(401).json({
-        message: "There was error, member wasn't deleted."
-      });
-    }
-  });
+  })
+    .then(result => {
+      if (result.n > 0) {
+        res.status(201).json({
+          message: "Member deleted"
+        });
+      } else {
+        res.status(401).json({
+          message: "There was error, member wasn't deleted."
+        });
+      }
+    })
+    .catch(err => {
+      res.status(500).json({ message: "Error happend: " + err.message });
+    });
 };
 
 exports.getMember = (req, res, next) => {
-  Member.findById(req.params.id).then(member => {
-    if (member) {
-      res.status(200).json(member);
-    } else {
-      res.status(404).json({
-        message: "Member not found."
-      });
-    }
-  });
+  Member.findById(req.params.id)
+    .then(member => {
+      if (member) {
+        res.status(200).json(member);
+      } else {
+        res.status(404).json({
+          message: "Member not found."
+        });
+      }
+    })
+    .catch(err => {
+      res.status(500).json({ message: "Error happend: " + err.message });
+    });
 };
 
 exports.updateMember = (req, res, next) => {
@@ -80,15 +96,19 @@ exports.updateMember = (req, res, next) => {
       _id: req.params.id
     },
     member
-  ).then(result => {
-    if (result.n > 0) {
-      res.status(200).json({
-        message: "Updated successful"
-      });
-    } else {
-      res.status(401).json({
-        message: "Update failed"
-      });
-    }
-  });
+  )
+    .then(result => {
+      if (result.n > 0) {
+        res.status(200).json({
+          message: "Updated successful"
+        });
+      } else {
+        res.status(401).json({
+          message: "Update failed"
+        });
+      }
+    })
+    .catch(err => {
+      res.status(500).json({ message: "Error happend: " + err.message });
+    });
 };

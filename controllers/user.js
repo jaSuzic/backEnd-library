@@ -30,6 +30,7 @@ exports.createNewUser = (req, res, next) => {
 };
 
 exports.loginUser = (req, res, next) => {
+  const key = process.env.SECRET_KEY;
   let fetchedUser;
   User.findOne({
     email: req.body.email
@@ -53,7 +54,7 @@ exports.loginUser = (req, res, next) => {
           email: fetchedUser.email,
           userId: fetchedUser._id
         },
-        "Jaksa_Suzic_App_Library_secret_key",
+        key,
         {
           expiresIn: "8h"
         }
@@ -82,20 +83,23 @@ exports.loginUser = (req, res, next) => {
 exports.deleteUser = (req, res, next) => {
   User.deleteOne({
     _id: req.params.id
-  }).then(results => {
-    if (results.n > 0) {
-      res.status(201).json({
-        message: "User deleted"
-      });
-    } else {
-      res.status(401).json({
-        message: "There was problem with credentials, user wasn't deleted"
-      });
-    }
-  });
+  })
+    .then(results => {
+      if (results.n > 0) {
+        res.status(201).json({
+          message: "User deleted"
+        });
+      } else {
+        res.status(401).json({
+          message: "There was problem with credentials, user wasn't deleted"
+        });
+      }
+    })
+    .catch(err => {
+      res.status(500).json({ message: "Error happend: " + err.message });
+    });
 };
 
-//needs to be tested
 exports.updatePassword = (req, res, next) => {
   let fetchedUser;
   User.findOne({
@@ -131,6 +135,9 @@ exports.updatePassword = (req, res, next) => {
           }
         });
       });
+    })
+    .catch(err => {
+      res.status(500).json({ message: "Error happend: " + err.message });
     });
 };
 
@@ -144,17 +151,21 @@ exports.updateImage = (req, res, next) => {
     {
       image: url + "/images/" + req.file.filename
     }
-  ).then(result => {
-    if (result.n > 0) {
-      res.status(200).json({
-        message: "Image updated!"
-      });
-    } else {
-      res.status(401).json({
-        message: "Update failed"
-      });
-    }
-  });
+  )
+    .then(result => {
+      if (result.n > 0) {
+        res.status(200).json({
+          message: "Image updated!"
+        });
+      } else {
+        res.status(401).json({
+          message: "Update failed"
+        });
+      }
+    })
+    .catch(err => {
+      res.status(500).json({ message: "Error happend: " + err.message });
+    });
 };
 
 exports.getUsersExcept = (req, res, next) => {
@@ -166,6 +177,9 @@ exports.getUsersExcept = (req, res, next) => {
       } else {
         res.status(404).json({ message: "Error." });
       }
+    })
+    .catch(err => {
+      res.status(500).json({ message: "Error happend: " + err.message });
     });
 };
 
@@ -178,15 +192,19 @@ exports.updateUser = (req, res, next) => {
     position: req.body.position,
     image: req.file ? url + "/images/" + req.file.filename : null
   };
-  User.updateOne({ _id: req.body.id }, updatedUser).then(result => {
-    if (result.n > 0) {
-      res.status(200).json({
-        message: "Updated successful"
-      });
-    } else {
-      res.status(401).json({
-        message: "Update failed"
-      });
-    }
-  });
+  User.updateOne({ _id: req.body.id }, updatedUser)
+    .then(result => {
+      if (result.n > 0) {
+        res.status(200).json({
+          message: "Updated successful"
+        });
+      } else {
+        res.status(401).json({
+          message: "Update failed"
+        });
+      }
+    })
+    .catch(err => {
+      res.status(500).json({ message: "Error happend: " + err.message });
+    });
 };

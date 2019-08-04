@@ -17,6 +17,9 @@ exports.getRents = (req, res, next) => {
         rents: fetchedRents,
         count: count
       });
+    })
+    .catch(err => {
+      res.status(500).json({ message: "Error happend: " + err.message });
     });
 };
 
@@ -39,7 +42,9 @@ exports.getActiveRents = (req, res, next) => {
         count: count
       });
     })
-    .catch(e => console.log(e));
+    .catch(err => {
+      res.status(500).json({ message: "Error happend: " + err.message });
+    });
 };
 
 exports.setRent = (req, res, next) => {
@@ -49,45 +54,58 @@ exports.setRent = (req, res, next) => {
     rentDate: req.body.rentDate,
     returnDate: req.body.returnDate
   });
-  rent.save().then(
-    result => {
-      res.status(201).json({
-        message: "New rent saved" + result
-      });
-    },
-    err => {
-      console.log(err);
-    }
-  );
+  rent
+    .save()
+    .then(
+      result => {
+        res.status(201).json({
+          message: "New rent saved" + result
+        });
+      },
+      err => {
+        console.log(err);
+      }
+    )
+    .catch(err => {
+      res.status(500).json({ message: "Error happend: " + err.message });
+    });
 };
 
 //I think that there is not need for deleting rent, so maybe remove this method.
 exports.deleteRent = (req, res, next) => {
   Rent.deleteOne({
     _id: req.params.id
-  }).then(result => {
-    if (result.n > 0) {
-      res.status(201).json({
-        message: "Rent removed."
-      });
-    } else {
-      res.status(401).json({
-        message: "There was error, rent wasn't deleted."
-      });
-    }
-  });
+  })
+    .then(result => {
+      if (result.n > 0) {
+        res.status(201).json({
+          message: "Rent removed."
+        });
+      } else {
+        res.status(401).json({
+          message: "There was error, rent wasn't deleted."
+        });
+      }
+    })
+    .catch(err => {
+      res.status(500).json({ message: "Error happend: " + err.message });
+    });
 };
 
 exports.getRent = (req, res, next) => {
-  Rent.findById(req.params.id).then(rent => {
-    if (rent) {
-      res.status(200).json(rent);
-    } else {
-      res.status(404).json({
-        message: "Rent not found"
-      });
-    }
-  });
+  Rent.findById(req.params.id)
+    .then(rent => {
+      if (rent) {
+        res.status(200).json(rent);
+      } else {
+        res.status(404).json({
+          message: "Rent not found"
+        });
+      }
+    })
+    .catch(err => {
+      res.status(500).json({ message: "Error happend: " + err.message });
+    });
 };
 
 exports.updateRent = (req, res, next) => {
@@ -103,17 +121,21 @@ exports.updateRent = (req, res, next) => {
       _id: req.params.id
     },
     rent
-  ).then(result => {
-    if (result.n > 0) {
-      res.status(200).json({
-        message: "Updated successful"
-      });
-    } else {
-      res.status(401).json({
-        message: "Update failed"
-      });
-    }
-  });
+  )
+    .then(result => {
+      if (result.n > 0) {
+        res.status(200).json({
+          message: "Updated successful"
+        });
+      } else {
+        res.status(401).json({
+          message: "Update failed"
+        });
+      }
+    })
+    .catch(err => {
+      res.status(500).json({ message: "Error happend: " + err.message });
+    });
 };
 exports.returnBook = (req, res, next) => {
   Rent.updateOne(
@@ -123,17 +145,21 @@ exports.returnBook = (req, res, next) => {
     {
       returnDate: req.body.returnDate
     }
-  ).then(result => {
-    if (result.n > 0) {
-      res.status(200).json({
-        message: "Book returned"
-      });
-    } else {
-      res.status(401).json({
-        message: "Update failed"
-      });
-    }
-  });
+  )
+    .then(result => {
+      if (result.n > 0) {
+        res.status(200).json({
+          message: "Book returned"
+        });
+      } else {
+        res.status(401).json({
+          message: "Update failed"
+        });
+      }
+    })
+    .catch(err => {
+      res.status(500).json({ message: "Error happend: " + err.message });
+    });
 };
 
 exports.history = (req, res, next) => {
@@ -153,5 +179,8 @@ exports.history = (req, res, next) => {
           message: "User not found or don't have any rents"
         });
       }
+    })
+    .catch(err => {
+      res.status(500).json({ message: "Error happend: " + err.message });
     });
 };

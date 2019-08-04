@@ -1,14 +1,15 @@
 const express = require("express");
 const rentsController = require("../controllers/rent");
 const router = express.Router();
+const checkAuth = require("../middleware/check-auth");
 
-router.get("", rentsController.getRents);
-router.get("/active", rentsController.getActiveRents);
-router.post("/history", rentsController.history);
-router.post("", rentsController.setRent);
-router.patch("/returnBook", rentsController.returnBook);
-router.get("/:id", rentsController.getRent);
-router.delete("/:id", rentsController.deleteRent);
-router.put("/:id", rentsController.updateRent);
+router.get("", checkAuth, rentsController.getRents);
+router.get("/active", checkAuth, rentsController.getActiveRents);
+router.post("/history", checkAuth, rentsController.history);
+router.post("", checkAuth, rentsController.setRent);
+router.patch("/returnBook", checkAuth, rentsController.returnBook);
+router.get("/:id", checkAuth, rentsController.getRent);
+router.delete("/:id", checkAuth, rentsController.deleteRent);
+router.put("/:id", checkAuth, rentsController.updateRent);
 
 module.exports = router;

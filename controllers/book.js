@@ -1,7 +1,6 @@
 const Book = require("../models/book");
 var _ = require("lodash");
 
-
 exports.getBooks = (req, res, next) => {
   let booksQuery;
   let pageSize = req.query.pageSize;
@@ -46,74 +45,95 @@ exports.getBooks = (req, res, next) => {
         books: fetchedBooks,
         count: count
       });
+    })
+    .catch(err => {
+      res.status(500).json({ message: "Error happend: " + err.message });
     });
 };
 
 exports.setBook = (req, res, next) => {
-  const url = req.protocol + '://' + req.get('host');
+  const url = req.protocol + "://" + req.get("host");
   const book = new Book({
     title: req.body.title,
     author: req.body.author,
     year: req.body.year,
-    imagePath: url + '/images/' + req.file.filename
+    imagePath: req.file ? url + "/images/" + req.file.filename : null
   });
-  book.save().then(result => {
-    res.status(201).json({
-      message: "Book added successfully."
+  book
+    .save()
+    .then(result => {
+      res.status(201).json({
+        message: "Book added successfully."
+      });
+    })
+    .catch(err => {
+      res.status(500).json({ message: "Error happend: " + err.message });
     });
-  });
 };
 
 exports.deleteBook = (req, res, next) => {
   Book.deleteOne({
     _id: req.params.id
-  }).then(result => {
-    if (result.n > 0) {
-      res.status(201).json({
-        message: "Book deleted"
-      });
-    } else {
-      res.status(401).json({
-        message: "There was error, book wasn't deleted."
-      });
-    }
-  });
+  })
+    .then(result => {
+      if (result.n > 0) {
+        res.status(201).json({
+          message: "Book deleted"
+        });
+      } else {
+        res.status(401).json({
+          message: "There was error, book wasn't deleted."
+        });
+      }
+    })
+    .catch(err => {
+      res.status(500).json({ message: "Error happend: " + err.message });
+    });
 };
 
 exports.getBook = (req, res, next) => {
-  Book.findById(req.params.id).then(book => {
-    if (book) {
-      res.status(200).json(book);
-    } else {
-      res.status(404).json({
-        message: "Book not found"
-      });
-    }
-  });
+  Book.findById(req.params.id)
+    .then(book => {
+      if (book) {
+        res.status(200).json(book);
+      } else {
+        res.status(404).json({
+          message: "Book not found"
+        });
+      }
+    })
+    .catch(err => {
+      res.status(500).json({ message: "Error happend: " + err.message });
+    });
 };
 
 exports.updateBook = (req, res, next) => {
-  const url = req.protocol + '://' + req.get('host');
+  const url = req.protocol + "://" + req.get("host");
   const book = new Book({
     _id: req.params.id,
     title: req.body.title,
     author: req.body.author,
     year: req.body.year,
-    imagePath: url + '/images/' + req.file.filename
+    imagePath: req.file ? url + "/images/" + req.file.filename : null
   });
-  Book.updateOne({
+  Book.updateOne(
+    {
       _id: req.params.id
     },
     book
-  ).then(result => {
-    if (result.n > 0) {
-      res.status(200).json({
-        message: "Updated successful"
-      });
-    } else {
-      res.status(401).json({
-        message: "Update failed"
-      });
-    }
-  });
+  )
+    .then(result => {
+      if (result.n > 0) {
+        res.status(200).json({
+          message: "Updated successful"
+        });
+      } else {
+        res.status(401).json({
+          message: "Update failed"
+        });
+      }
+    })
+    .catch(err => {
+      res.status(500).json({ message: "Error happend: " + err.message });
+    });
 };
