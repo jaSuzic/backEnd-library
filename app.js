@@ -38,15 +38,13 @@ app.use((req, res, next) => {
 // libAdmin gOe69S3dEHY9ZxMz
 const user = process.env.DB_USER_NAME;
 const pass = process.env.DB_PASS;
-console.log(user, pass);
 mongoose
   .connect(
     "mongodb+srv://" +
-      user +
-      ":" +
-      pass +
-      "@cluster0-87hud.mongodb.net/app-library?retryWrites=true&w=majority",
-    {
+    user +
+    ":" +
+    pass +
+    "@cluster0-87hud.mongodb.net/app-library?retryWrites=true&w=majority", {
       useNewUrlParser: true,
       useCreateIndex: true
     }

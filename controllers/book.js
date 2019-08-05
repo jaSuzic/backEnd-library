@@ -47,7 +47,9 @@ exports.getBooks = (req, res, next) => {
       });
     })
     .catch(err => {
-      res.status(500).json({ message: "Error happend: " + err.message });
+      res.status(500).json({
+        message: "Error happend: " + err.message
+      });
     });
 };
 
@@ -67,14 +69,16 @@ exports.setBook = (req, res, next) => {
       });
     })
     .catch(err => {
-      res.status(500).json({ message: "Error happend: " + err.message });
+      res.status(500).json({
+        message: "Error happend: " + err.message
+      });
     });
 };
 
 exports.deleteBook = (req, res, next) => {
   Book.deleteOne({
-    _id: req.params.id
-  })
+      _id: req.params.id
+    })
     .then(result => {
       if (result.n > 0) {
         res.status(201).json({
@@ -82,12 +86,14 @@ exports.deleteBook = (req, res, next) => {
         });
       } else {
         res.status(401).json({
-          message: "There was error, book wasn't deleted."
+          message: "There was an error, book wasn't deleted."
         });
       }
     })
     .catch(err => {
-      res.status(500).json({ message: "Error happend: " + err.message });
+      res.status(500).json({
+        message: "Error happend: " + err.message
+      });
     });
 };
 
@@ -103,7 +109,9 @@ exports.getBook = (req, res, next) => {
       }
     })
     .catch(err => {
-      res.status(500).json({ message: "Error happend: " + err.message });
+      res.status(500).json({
+        message: "Error happend: " + err.message
+      });
     });
 };
 
@@ -116,12 +124,11 @@ exports.updateBook = (req, res, next) => {
     year: req.body.year,
     imagePath: req.file ? url + "/images/" + req.file.filename : null
   });
-  Book.updateOne(
-    {
-      _id: req.params.id
-    },
-    book
-  )
+  Book.updateOne({
+        _id: req.params.id
+      },
+      book
+    )
     .then(result => {
       if (result.n > 0) {
         res.status(200).json({
@@ -134,6 +141,8 @@ exports.updateBook = (req, res, next) => {
       }
     })
     .catch(err => {
-      res.status(500).json({ message: "Error happend: " + err.message });
+      res.status(500).json({
+        message: "Error happend: " + err.message
+      });
     });
 };

@@ -7,6 +7,6 @@
     "type": "node",
     "request": "launch",
     "name": "Launch BE",
-    "program": "C:/projekat/app-library/BE/server.js"
+    "program": "C:/vezbanje/app-library/BE/server.js"
   }]
 }

@@ -19,14 +19,16 @@ exports.getRents = (req, res, next) => {
       });
     })
     .catch(err => {
-      res.status(500).json({ message: "Error happend: " + err.message });
+      res.status(500).json({
+        message: "Error happend: " + err.message
+      });
     });
 };
 
 exports.getActiveRents = (req, res, next) => {
   const rentQuery = Rent.find({
-    returnDate: null
-  })
+      returnDate: null
+    })
     .populate("bookId")
     .populate("memberId");
   let fetchedRents;
@@ -43,7 +45,9 @@ exports.getActiveRents = (req, res, next) => {
       });
     })
     .catch(err => {
-      res.status(500).json({ message: "Error happend: " + err.message });
+      res.status(500).json({
+        message: "Error happend: " + err.message
+      });
     });
 };
 
@@ -67,15 +71,16 @@ exports.setRent = (req, res, next) => {
       }
     )
     .catch(err => {
-      res.status(500).json({ message: "Error happend: " + err.message });
+      res.status(500).json({
+        message: "Error happend: " + err.message
+      });
     });
 };
 
-//I think that there is not need for deleting rent, so maybe remove this method.
 exports.deleteRent = (req, res, next) => {
   Rent.deleteOne({
-    _id: req.params.id
-  })
+      _id: req.params.id
+    })
     .then(result => {
       if (result.n > 0) {
         res.status(201).json({
@@ -88,9 +93,13 @@ exports.deleteRent = (req, res, next) => {
       }
     })
     .catch(err => {
-      res.status(500).json({ message: "Error happend: " + err.message });
+      res.status(500).json({
+        message: "Error happend: " + err.message
+      });
     });
 };
+
+
 
 exports.getRent = (req, res, next) => {
   Rent.findById(req.params.id)
@@ -104,7 +113,9 @@ exports.getRent = (req, res, next) => {
       }
     })
     .catch(err => {
-      res.status(500).json({ message: "Error happend: " + err.message });
+      res.status(500).json({
+        message: "Error happend: " + err.message
+      });
     });
 };
 
@@ -116,12 +127,11 @@ exports.updateRent = (req, res, next) => {
     rentDate: req.body.rentDate,
     returnDate: req.body.returnDate
   });
-  Rent.updateOne(
-    {
-      _id: req.params.id
-    },
-    rent
-  )
+  Rent.updateOne({
+        _id: req.params.id
+      },
+      rent
+    )
     .then(result => {
       if (result.n > 0) {
         res.status(200).json({
@@ -134,18 +144,17 @@ exports.updateRent = (req, res, next) => {
       }
     })
     .catch(err => {
-      res.status(500).json({ message: "Error happend: " + err.message });
+      res.status(500).json({
+        message: "Error happend: " + err.message
+      });
     });
 };
 exports.returnBook = (req, res, next) => {
-  Rent.updateOne(
-    {
+  Rent.updateOne({
       _id: req.body.id
-    },
-    {
+    }, {
       returnDate: req.body.returnDate
-    }
-  )
+    })
     .then(result => {
       if (result.n > 0) {
         res.status(200).json({
@@ -158,16 +167,20 @@ exports.returnBook = (req, res, next) => {
       }
     })
     .catch(err => {
-      res.status(500).json({ message: "Error happend: " + err.message });
+      res.status(500).json({
+        message: "Error happend: " + err.message
+      });
     });
 };
 
 exports.history = (req, res, next) => {
   const id = mongoose.Types.ObjectId(req.body.memberId);
   Rent.find({
-    memberId: id
-  })
-    .sort({ rentDate: -1 })
+      memberId: id
+    })
+    .sort({
+      rentDate: -1
+    })
     .populate("bookId")
     .then(result => {
       if (result) {
@@ -181,6 +194,8 @@ exports.history = (req, res, next) => {
       }
     })
     .catch(err => {
-      res.status(500).json({ message: "Error happend: " + err.message });
+      res.status(500).json({
+        message: "Error happend: " + err.message
+      });
     });
 };
