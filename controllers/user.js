@@ -32,58 +32,60 @@ exports.createNewUser = (req, res, next) => {
 exports.loginUser = (req, res, next) => {
   const key = process.env.SECRET_KEY;
   let fetchedUser;
+
   User.findOne({
-    email: req.body.email
-  })
+      email: req.body.email
+    })
     .then(user => {
-      if (!user)
+      if (!user) {
         return res.status(401).json({
           message: "Auth failed"
         });
+      }
       fetchedUser = user;
       return bcrypt.compare(req.body.password, user.password);
+
     })
     .then(result => {
-      if (!result)
-        return res.status(401).json({
-          message: "Auth failed"
+      if (!result || result.statusCode === 401) {
+        if (!result) {
+          res.status(401).json({
+            message: "Auth failed"
+          });
+        }
+      } else {
+        // JWT is used now
+        const token = jwt.sign({
+            email: fetchedUser.email,
+            userId: fetchedUser._id
+          },
+          key, {
+            expiresIn: "8h"
+          }
+        );
+        res.status(200).json({
+          message: "success",
+          token: token,
+          expiresIn: 28800,
+          user: {
+            _id: fetchedUser._id,
+            email: fetchedUser.email,
+            firstName: fetchedUser.firstName,
+            lastName: fetchedUser.lastName,
+            image: fetchedUser.image,
+            position: fetchedUser.position
+          }
         });
-      // JWT is used now
-      const token = jwt.sign(
-        {
-          email: fetchedUser.email,
-          userId: fetchedUser._id
-        },
-        key,
-        {
-          expiresIn: "8h"
-        }
-      );
-      res.status(200).json({
-        message: "success",
-        token: token,
-        expiresIn: 28800,
-        user: {
-          _id: fetchedUser._id,
-          email: fetchedUser.email,
-          firstName: fetchedUser.firstName,
-          lastName: fetchedUser.lastName,
-          image: fetchedUser.image,
-          position: fetchedUser.position
-        }
-      });
+      }
     })
-    .catch(err => {
-      return res.status(401).json({
-        message: "Auth failed"
-      });
-    });
+
+
 };
 
 exports.deleteUser = (req, res, next) => {
   User.deleteOne({
-    _id: req.params.id
-  })
+      _id: req.params.id
+    })
     .then(results => {
       if (results.n > 0) {
         res.status(201).json({
@@ -96,15 +98,17 @@ exports.deleteUser = (req, res, next) => {
       }
     })
     .catch(err => {
-      res.status(500).json({ message: "Error happend: " + err.message });
+      res.status(500).json({
+        message: "Error happend: " + err.message
+      });
     });
 };
 
 exports.updatePassword = (req, res, next) => {
   let fetchedUser;
   User.findOne({
-    email: req.body.email
-  })
+      email: req.body.email
+    })
     .then(user => {
       if (!user) return res.status(401);
       fetchedUser = user;
@@ -116,14 +120,11 @@ exports.updatePassword = (req, res, next) => {
           message: "Password not correct!"
         });
       bcrypt.hash(req.body.newPass, 10).then(hash => {
-        User.updateOne(
-          {
-            _id: fetchedUser._id
-          },
-          {
-            password: hash
-          }
-        ).then(result => {
+        User.updateOne({
+          _id: fetchedUser._id
+        }, {
+          password: hash
+        }).then(result => {
           if (result.n > 0) {
             res.status(200).json({
               message: "Updated successful"
@@ -137,21 +138,20 @@ exports.updatePassword = (req, res, next) => {
       });
     })
     .catch(err => {
-      res.status(500).json({ message: "Error happend: " + err.message });
+      res.status(500).json({
+        message: "Error happend: " + err.message
+      });
     });
 };
 
 exports.updateImage = (req, res, next) => {
   const url = req.protocol + "://" + req.get("host");
   //omoguciti ulogovanom useru da promeni SVOJU sliku
-  User.updateOne(
-    {
+  User.updateOne({
       _id: req.body.id
-    },
-    {
+    }, {
       image: url + "/images/" + req.file.filename
-    }
-  )
+    })
     .then(result => {
       if (result.n > 0) {
         res.status(200).json({
@@ -164,22 +164,32 @@ exports.updateImage = (req, res, next) => {
       }
     })
     .catch(err => {
-      res.status(500).json({ message: "Error happend: " + err.message });
+      res.status(500).json({
+        message: "Error happend: " + err.message
+      });
     });
 };
 
 exports.getUsersExcept = (req, res, next) => {
-  User.find({ $nor: [{ _id: req.body.id }] })
+  User.find({
+      $nor: [{
+        _id: req.body.id
+      }]
+    })
     .select("-password")
     .then(users => {
       if (users) {
         res.status(200).json(users);
       } else {
-        res.status(404).json({ message: "Error." });
+        res.status(404).json({
+          message: "Error."
+        });
       }
     })
     .catch(err => {
-      res.status(500).json({ message: "Error happend: " + err.message });
+      res.status(500).json({
+        message: "Error happend: " + err.message
+      });
     });
 };
 
@@ -192,7 +202,9 @@ exports.updateUser = (req, res, next) => {
     position: req.body.position,
     image: req.file ? url + "/images/" + req.file.filename : null
   };
-  User.updateOne({ _id: req.body.id }, updatedUser)
+  User.updateOne({
+      _id: req.body.id
+    }, updatedUser)
     .then(result => {
       if (result.n > 0) {
         res.status(200).json({
@@ -205,6 +217,8 @@ exports.updateUser = (req, res, next) => {
       }
     })
     .catch(err => {
-      res.status(500).json({ message: "Error happend: " + err.message });
+      res.status(500).json({
+        message: "Error happend: " + err.message
+      });
     });
 };
