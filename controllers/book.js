@@ -33,7 +33,7 @@ exports.getBooks = (req, res, next) => {
   Book.find(booksQuery)
     .skip(+pageSize * +pageIndex)
     .limit(+pageSize)
-    //-1 desc, 1 asc: .sort({author: 1})
+    // -1 desc, 1 asc: .sort({author: 1})
     .sort(sort)
     .then(books => {
       fetchedBooks = books;

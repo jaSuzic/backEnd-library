@@ -78,7 +78,11 @@ exports.loginUser = (req, res, next) => {
         });
       }
     })
-
+    .catch(err => {
+      res.status(500).json({
+        error: err
+      });
+    });
 
 };
 
@@ -146,7 +150,6 @@ exports.updatePassword = (req, res, next) => {
 
 exports.updateImage = (req, res, next) => {
   const url = req.protocol + "://" + req.get("host");
-  //omoguciti ulogovanom useru da promeni SVOJU sliku
   User.updateOne({
       _id: req.body.id
     }, {

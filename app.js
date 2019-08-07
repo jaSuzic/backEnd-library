@@ -35,7 +35,6 @@ app.use((req, res, next) => {
 
 //Connecting to mongoDB
 
-// libAdmin gOe69S3dEHY9ZxMz
 const user = process.env.DB_USER_NAME;
 const pass = process.env.DB_PASS;
 mongoose
