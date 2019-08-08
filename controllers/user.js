@@ -34,8 +34,8 @@ exports.loginUser = (req, res, next) => {
   let fetchedUser;
 
   User.findOne({
-      email: req.body.email
-    })
+    email: req.body.email
+  })
     .then(user => {
       if (!user) {
         return res.status(401).json({
@@ -44,7 +44,6 @@ exports.loginUser = (req, res, next) => {
       }
       fetchedUser = user;
       return bcrypt.compare(req.body.password, user.password);
-
     })
     .then(result => {
       if (!result || result.statusCode === 401) {
@@ -55,11 +54,13 @@ exports.loginUser = (req, res, next) => {
         }
       } else {
         // JWT is used now
-        const token = jwt.sign({
+        const token = jwt.sign(
+          {
             email: fetchedUser.email,
             userId: fetchedUser._id
           },
-          key, {
+          key,
+          {
             expiresIn: "8h"
           }
         );
@@ -83,13 +84,12 @@ exports.loginUser = (req, res, next) => {
         error: err
       });
     });
-
 };
 
 exports.deleteUser = (req, res, next) => {
   User.deleteOne({
-      _id: req.params.id
-    })
+    _id: req.params.id
+  })
     .then(results => {
       if (results.n > 0) {
         res.status(201).json({
@@ -111,8 +111,8 @@ exports.deleteUser = (req, res, next) => {
 exports.updatePassword = (req, res, next) => {
   let fetchedUser;
   User.findOne({
-      email: req.body.email
-    })
+    email: req.body.email
+  })
     .then(user => {
       if (!user) return res.status(401);
       fetchedUser = user;
@@ -124,11 +124,14 @@ exports.updatePassword = (req, res, next) => {
           message: "Password not correct!"
         });
       bcrypt.hash(req.body.newPass, 10).then(hash => {
-        User.updateOne({
-          _id: fetchedUser._id
-        }, {
-          password: hash
-        }).then(result => {
+        User.updateOne(
+          {
+            _id: fetchedUser._id
+          },
+          {
+            password: hash
+          }
+        ).then(result => {
           if (result.n > 0) {
             res.status(200).json({
               message: "Updated successful"
@@ -150,11 +153,14 @@ exports.updatePassword = (req, res, next) => {
 
 exports.updateImage = (req, res, next) => {
   const url = req.protocol + "://" + req.get("host");
-  User.updateOne({
+  User.updateOne(
+    {
       _id: req.body.id
-    }, {
+    },
+    {
       image: url + "/images/" + req.file.filename
-    })
+    }
+  )
     .then(result => {
       if (result.n > 0) {
         res.status(200).json({
@@ -175,10 +181,12 @@ exports.updateImage = (req, res, next) => {
 
 exports.getUsersExcept = (req, res, next) => {
   User.find({
-      $nor: [{
+    $nor: [
+      {
         _id: req.body.id
-      }]
-    })
+      }
+    ]
+  })
     .select("-password")
     .then(users => {
       if (users) {
@@ -205,9 +213,12 @@ exports.updateUser = (req, res, next) => {
     position: req.body.position,
     image: req.file ? url + "/images/" + req.file.filename : null
   };
-  User.updateOne({
+  User.updateOne(
+    {
       _id: req.body.id
-    }, updatedUser)
+    },
+    updatedUser
+  )
     .then(result => {
       if (result.n > 0) {
         res.status(200).json({

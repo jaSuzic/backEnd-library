@@ -17,7 +17,7 @@ app.use(
   })
 );
 
-app.use("/images", express.static(path.join("images")));
+// app.use("/images", express.static(path.join("images")));
 
 //For CORS:
 app.use((req, res, next) => {
@@ -40,10 +40,11 @@ const pass = process.env.DB_PASS;
 mongoose
   .connect(
     "mongodb+srv://" +
-    user +
-    ":" +
-    pass +
-    "@cluster0-87hud.mongodb.net/app-library?retryWrites=true&w=majority", {
+      user +
+      ":" +
+      pass +
+      "@cluster0-87hud.mongodb.net/app-library?retryWrites=true&w=majority",
+    {
       useNewUrlParser: true,
       useCreateIndex: true
     }
