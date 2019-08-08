@@ -13,7 +13,7 @@ const storage = multer.diskStorage({
     if (isValid) {
       error = null;
     }
-    cb(error, "/upload");
+    cb(error, "/public/upload");
   },
   filename: (req, file, cb) => {
     const name = file.originalname
@@ -27,4 +27,4 @@ const storage = multer.diskStorage({
 
 module.exports = multer({
   storage: storage
-}).single("image");
+});
