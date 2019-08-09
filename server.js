@@ -1,5 +1,7 @@
 const http = require('http');
-const app = require('./app')
+const app = require('./app');
+
+require('./middleware/prod')(app);
 
 const normalizePort = val => {
 	var port = parseInt(val, 10);

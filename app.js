@@ -40,11 +40,10 @@ const pass = process.env.DB_PASS;
 mongoose
   .connect(
     "mongodb+srv://" +
-      user +
-      ":" +
-      pass +
-      "@cluster0-87hud.mongodb.net/app-library?retryWrites=true&w=majority",
-    {
+    user +
+    ":" +
+    pass +
+    "@cluster0-87hud.mongodb.net/app-library?retryWrites=true&w=majority", {
       useNewUrlParser: true,
       useCreateIndex: true
     }
