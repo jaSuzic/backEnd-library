@@ -18,6 +18,7 @@ const MIME_TYPE_MAP = {
 const storage = multerS3({
 	s3: s3,
 	bucket: 'app-library-jaksa',
+	acl: 'public-read',
 	metadata: function (req, file, cb) {
 		cb(null, {
 			fieldName: file.fieldname

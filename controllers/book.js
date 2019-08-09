@@ -116,6 +116,7 @@ exports.getBook = (req, res, next) => {
 };
 
 exports.updateBook = (req, res, next) => {
+  console.log('uslo smo u update')
   const url = req.protocol + "://" + req.get("host");
   const book = new Book({
     _id: req.params.id,
