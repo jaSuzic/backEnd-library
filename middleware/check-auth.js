@@ -7,8 +7,10 @@ module.exports = (req, res, next) => {
   try {
     const token = req.headers.authorization.split(" ")[1];
     jwt.verify(token, key);
+    console.log('zovemo next')
     next();
   } catch (error) {
+    console.log('puca')
     res.status(401).json({
       message: "Auth failed because of JWT"
     });
