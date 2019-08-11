@@ -203,13 +203,12 @@ exports.getUsersExcept = (req, res, next) => {
 };
 
 exports.updateUser = (req, res, next) => {
-  const url = req.protocol + "://" + req.get("host");
   const updatedUser = {
     firstName: req.body.firstName,
     lastName: req.body.lastName,
     email: req.body.email,
     position: req.body.position,
-    image: req.file ? req.file.location : null
+    image: req.file ? req.file.location : req.body.imagePath
   };
   User.updateOne(
     {
