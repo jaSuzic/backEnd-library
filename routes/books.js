@@ -14,6 +14,6 @@ router.delete(
   removeConnected.deleteWhenRemovingBook,
   booksController.deleteBook
 );
-router.put("/:id", checkAuth, multer, booksController.updateBook);
+router.patch("/:id", checkAuth, multer, booksController.updateBook);
 
 module.exports = router;
