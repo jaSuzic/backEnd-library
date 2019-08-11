@@ -58,7 +58,7 @@ exports.setBook = (req, res, next) => {
     title: req.body.title,
     author: req.body.author,
     year: req.body.year,
-    image: req.file ? req.file.location : null
+    imagePath: req.file ? req.file.location : null
   });
   book
     .save()
@@ -120,7 +120,7 @@ exports.updateBook = (req, res, next) => {
     title: req.body.title,
     author: req.body.author,
     year: req.body.year,
-    image: req.file ? req.file.location : null
+    imagePath: req.file ? req.file.location : null
   });
   Book.updateOne(
     {
