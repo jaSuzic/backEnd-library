@@ -36,10 +36,7 @@ const upload = multer({
       });
     },
     key: function(req, file, cb) {
-      cb(
-        null,
-        "image-" + Date.now().toString() + path.extname(file.originalname)
-      );
+      cb(null, "image-" + Date.now().toString() + ".jpg");
     }
   })
 });
