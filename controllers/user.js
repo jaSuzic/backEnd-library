@@ -5,14 +5,13 @@ var _ = require("lodash");
 
 exports.createNewUser = (req, res, next) => {
   bcrypt.hash(req.body.password, 10).then(hash => {
-    const url = req.protocol + "://" + req.get("host");
     const user = new User({
       email: req.body.email,
       password: hash,
       firstName: req.body.firstName,
       lastName: req.body.lastName,
       position: req.body.position,
-      image: req.file ? url + "/images/" + req.file.filename : null
+      image: req.file ? req.file.location : null
     });
     user
       .save()

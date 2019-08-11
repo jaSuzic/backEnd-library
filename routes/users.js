@@ -10,6 +10,12 @@ router.post("/updatePass", checkAuth, userController.updatePassword);
 router.post("/getUsers", checkAuth, userController.getUsersExcept);
 router.put("/updateUser", checkAuth, multer, userController.updateUser);
 router.patch("/updateImage", checkAuth, multer, userController.updateImage);
+router.post("/uploadTest", multer, (req, res) => {
+  res.status(200).json({
+    message: "Ovo bi trebalo da je response: ",
+    res: req.file
+  });
+});
 router.delete("/:id", checkAuth, userController.deleteUser);
 
 module.exports = router;
