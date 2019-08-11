@@ -120,7 +120,7 @@ exports.updateBook = (req, res, next) => {
     title: req.body.title,
     author: req.body.author,
     year: req.body.year,
-    imagePath: req.file ? req.file.location : null
+    imagePath: req.file ? req.file.location : req.body.imagePath
   });
   Book.updateOne(
     {
