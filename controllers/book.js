@@ -54,12 +54,11 @@ exports.getBooks = (req, res, next) => {
 };
 
 exports.setBook = (req, res, next) => {
-  const url = req.protocol + "://" + req.get("host");
   const book = new Book({
     title: req.body.title,
     author: req.body.author,
     year: req.body.year,
-    imagePath: req.file ? url + "/images/" + req.file.filename : null
+    image: req.file ? req.file.location : null
   });
   book
     .save()
@@ -77,8 +76,8 @@ exports.setBook = (req, res, next) => {
 
 exports.deleteBook = (req, res, next) => {
   Book.deleteOne({
-      _id: req.params.id
-    })
+    _id: req.params.id
+  })
     .then(result => {
       if (result.n > 0) {
         res.status(201).json({
@@ -116,20 +115,19 @@ exports.getBook = (req, res, next) => {
 };
 
 exports.updateBook = (req, res, next) => {
-  console.log('usli smo u update')
-  const url = req.protocol + "://" + req.get("host");
   const book = new Book({
     _id: req.params.id,
     title: req.body.title,
     author: req.body.author,
     year: req.body.year,
-    imagePath: req.file ? url + "/images/" + req.file.filename : null
+    image: req.file ? req.file.location : null
   });
-  Book.updateOne({
-        _id: req.params.id
-      },
-      book
-    )
+  Book.updateOne(
+    {
+      _id: req.params.id
+    },
+    book
+  )
     .then(result => {
       if (result.n > 0) {
         res.status(200).json({

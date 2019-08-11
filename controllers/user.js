@@ -151,13 +151,12 @@ exports.updatePassword = (req, res, next) => {
 };
 
 exports.updateImage = (req, res, next) => {
-  const url = req.protocol + "://" + req.get("host");
   User.updateOne(
     {
       _id: req.body.id
     },
     {
-      image: url + "/images/" + req.file.filename
+      image: req.file ? req.file.location : null
     }
   )
     .then(result => {
@@ -210,7 +209,7 @@ exports.updateUser = (req, res, next) => {
     lastName: req.body.lastName,
     email: req.body.email,
     position: req.body.position,
-    image: req.file ? url + "/images/" + req.file.filename : null
+    image: req.file ? req.file.location : null
   };
   User.updateOne(
     {
