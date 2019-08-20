@@ -13,3 +13,5 @@ router.patch("/updateImage", checkAuth, multer, userController.updateImage);
 router.delete("/:id", checkAuth, userController.deleteUser);
 
 module.exports = router;
+
+//checkAuth, multer,
